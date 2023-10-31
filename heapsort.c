@@ -1,74 +1,57 @@
-#include <stdio.h>
+public class HeapSort {
 
-int heapsort(int *a,int len){
-    build_heap(a,len);
-    int tmp;
-    int newlen=len;
-    while(newlen>1){
-        //swap head with last
-        tmp=a[0];
-        a[0]=a[newlen-1];
-        a[newlen-1]=tmp;
-        newlen--;
-        //heapify new heap
-        heaplify(a,newlen,0);
-        
-    }
-    return 0;
-}
+    public void sort(int arr[]) {
+        int n = arr.length;
 
-int build_heap(int *a,int len){
-    int i;
-    for (i=len-1; i>=0; i--) {
-        if(2*i+1>len-1) continue;
-        heaplify(a,len,i);
-    }
-    return 0;
-}
-int heaplify(int *a,int len, int index){
-    int left=2*index+1;
-    int right=2*index+2;
-    int tmp;
-    if (left>len-1) {
-        return 0;
-    }
-    else if(left==len-1){
-        if(a[index]<a[left]){
-            //swap
-            tmp=a[index];
-            a[index]=a[left];
-            a[left]=tmp;
-        }
-        return 0;
-    }
-    else{
-        if (a[index]<a[left]||a[index]<a[right]) {
-            if (a[left]<a[right]) {
-                //swap right with parent
-                tmp=a[index];
-                a[index]=a[right];
-                a[right]=tmp;
-                heaplify(a,len,right);
-            }
-            else{
-                //swap left with parent
-                tmp=a[index];
-                a[index]=a[left];
-                a[left]=tmp;
-                heaplify(a,len,left);
-            }
+        // Build heap (rearrange array)
+        for (int i = n / 2 - 1; i >= 0; i--)
+            heapify(arr, n, i);
+
+        // One by one extract an element from heap
+        for (int i = n - 1; i >= 0; i--) {
+            // Move current root to end
+            int temp = arr[0];
+            arr[0] = arr[i];
+            arr[i] = temp;
+
+            // Call max heapify on the reduced heap
+            heapify(arr, i, 0);
         }
     }
-}
 
-int main(){
-    int a[10]={2,1,4,7,5,8,9,20,0,3};
-    int len=10;
-    heapsort(a,len);
-    int i;
-    for (i=0; i<len; i++) {
-        printf("%d\t",a[i]);
+    void heapify(int arr[], int n, int i) {
+        int largest = i;  // Initialize largest as root
+        int l = 2 * i + 1;  // left = 2*i + 1
+        int r = 2 * i + 2;  // right = 2*i + 2
+
+        // If left child is larger than root
+        if (l < n && arr[l] > arr[largest])
+            largest = l;
+
+        // If right child is larger than largest so far
+        if (r < n && arr[r] > arr[largest])
+            largest = r;
+
+        // If largest is not root
+        if (largest != i) {
+            int swap = arr[i];
+            arr[i] = arr[largest];
+            arr[largest] = swap;
+
+            // Recursively heapify the affected sub-tree
+            heapify(arr, n, largest);
+        }
     }
-    printf("\n");
-    return 0;
+
+    public static void main(String args[]) {
+        int arr[] = {12, 11, 13, 5, 6, 7};
+        int n = arr.length;
+
+        HeapSort ob = new HeapSort();
+        ob.sort(arr);
+
+        System.out.println("Sorted array is:");
+        for (int i = 0; i < n; ++i)
+            System.out.print(arr[i] + " ");
+    }
 }
